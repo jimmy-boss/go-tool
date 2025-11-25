@@ -18,7 +18,7 @@ import (
 // GetStartPath 获取查找的起始路径：
 // - 如果运行的是编译后的二进制（非临时路径），使用二进制所在目录
 // - 如果是 go run 产生的临时二进制，则使用当前源文件所在目录
-func GetStartPath() string {
+func GetStartPath(skip int) string {
 	exePath, err := os.Executable()
 	if err == nil && !IsTempExecutable(exePath) {
 		// 正常二进制：使用其所在目录
@@ -26,7 +26,7 @@ func GetStartPath() string {
 	}
 
 	// go run 场景：回退到源文件目录
-	_, srcFile, _, ok := runtime.Caller(0)
+	_, srcFile, _, ok := runtime.Caller(skip)
 	if ok {
 		return filepath.Dir(srcFile)
 	}
